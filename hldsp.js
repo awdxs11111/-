@@ -1,122 +1,175 @@
 /*
-软件名称:任性猫
+软件名称:哈喽短视频 微信小程序
+更新时间：2021-03-09 @肥皂
+脚本说明：哈喽短视频
+脚本为自动签到和领取视频红包
 
-资金盘，资金盘，资金盘
+小程序二维码地址 https://raw.githubusercontent.com/age174/-/main/DCB00CEE-FFFF-427B-B7ED-7381DE584860.jpeg
 
-一切以零撸为目的，建议别充值，不知道什么时候跑路。。
+本脚本以学习为主！
+使用方法:
+打开哈喽短视频小程序，点击我的或者任务获取数据
 
-注册后会送一块钱可以买到一只分红喵，然后每天可以分红，每天可撸0.4分红
+TG电报群: https://t.me/hahaha802
+
+boxjs地址 :  
+
+https://raw.githubusercontent.com/age174/-/main/feizao.box.json
 
 
-
-我们先撸它，把它撸跑路再说。。多微信多撸
-
-微信扫描地址 https://raw.githubusercontent.com/age174/-/main/9FE51C79-0DD7-40DF-824C-2DD28AAFA561.jpeg
-
-
-使用方法，注册进入买只新手猫，点击一次收取，获取数据完工。
-
+哈喽短视频
+圈X配置如下，其他软件自行测试，定时可以多设置几次，没任务会停止运行的
 [task_local]
-#任性猫
-15,35 0,12 * * * https://raw.githubusercontent.com/age174/-/main/rxm.js, tag=任性猫, img-url=https://raw.githubusercontent.com/shoujiqiyuan/PokemonGOforQuanX/master/IconSet/Z005.png, enabled=true
+#哈喽短视频
+15 13 * * * https://raw.githubusercontent.com/age174/-/main/hldsp.js, tag=哈喽短视频, img-url=https://ae01.alicdn.com/kf/Uda8ecbbe50444fe293b538cbccf9d719q.jpg, enabled=true
 
-重写
 
-https://cat.rxmao.net/miner/cat.php url script-request-body https://raw.githubusercontent.com/age174/-/main/rxm.js
+[rewrite_local]
+#哈喽短视频
+https://vip.75787.com/app/index.php url script-request-header https://raw.githubusercontent.com/age174/-/main/hldsp.js
 
-[mitm]
 
-hostname = cat.rxmao.net
 
+#loon
+https://vip.75787.com/app/index.php script-path=https://raw.githubusercontent.com/age174/-/main/hldsp.js, requires-header=true, timeout=10, tag=哈喽短视频
+
+
+
+#surge
+
+哈喽短视频 = type=http-request,pattern=https://vip.75787.com/app/index.php,requires-header=1,max-size=0,script-path=https://raw.githubusercontent.com/age174/-/main/hldsp.js,script-update-interval=0
+
+
+
+
+[MITM]
+hostname = vip.75787.com
 
 
 */
-const $ = new Env('任性猫');
 
+
+const $ = new Env('哈喽短视频');
 let status;
-status = (status = ($.getval("rxmstatus") || "1") ) > 1 ? `${status}` : ""; // 账号扩展字符
-const rxmurlArr = [], rxmhdArr = [],rxmbodyArr = [],rxmcount = ''
-let rxmurl = $.getdata('rxmurl')
-let rxmhd = $.getdata('rxmhd')
-let rxmbody = $.getdata('rxmbody')
+status = (status = ($.getval("hldspstatus") || "1") ) > 1 ? `${status}` : ""; // 账号扩展字符
+const hldspurlArr = [], hldsphdArr = [],hldspcount = ''
+let hldspurl = $.getdata('hldspurl')
+let hldsphd = $.getdata('hldsphd')
+let hlsign = '',hluid = ''
 !(async () => {
   if (typeof $request !== "undefined") {
-    await rxmck()
-  } else {
-rxmurlArr.push($.getdata('rxmurl'))
-    rxmhdArr.push($.getdata('rxmhd'))
-    rxmbodyArr.push($.getdata('rxmbody'))
-    let rxmcount = ($.getval('rxmcount') || '1');
-  for (let i = 2; i <= rxmcount; i++) {
-    rxmurlArr.push($.getdata(`rxmurl${i}`))
-    rxmhdArr.push($.getdata(`rxmhd${i}`))
-    rxmbodyArr.push($.getdata(`rxmbody${i}`))
+    await hldspck()
+   
+  } else {hldspurlArr.push($.getdata('hldspurl'))
+    hldsphdArr.push($.getdata('hldsphd'))
+    let hldspcount = ($.getval('hldspcount') || '1');
+  for (let i = 2; i <= hldspcount; i++) {
+    hldspurlArr.push($.getdata(`hldspurl${i}`))
+    hldsphdArr.push($.getdata(`hldsphd${i}`))
   }
-    console.log(`------------- 共${rxmhdArr.length}个账号----------------\n`)
-      for (let i = 0; i < rxmhdArr.length; i++) {
-        if (rxmhdArr[i]) {
+    console.log(`------------- 共${hldsphdArr.length}个账号-------------\n`)
+      for (let i = 0; i < hldsphdArr.length; i++) {
+        if (hldsphdArr[i]) {
          
-          rxmurl = rxmurlArr[i];
-          rxmhd = rxmhdArr[i];
-          rxmbody = rxmbodyArr[i];
+          hldspurl = hldspurlArr[i];
+          hldsphd = hldsphdArr[i];
           $.index = i + 1;
-          console.log(`\n开始【任性猫${$.index}】`)
-          await rxmqd();
-      }
-     }
+          console.log(`\n开始【哈喽短视频${$.index}】`)
+          //await hldsphhb();
+            await hldspqd();
+            
   }
+}}
+
 })()
   .catch((e) => $.logErr(e))
   .finally(() => $.done())
+//哈喽短视频数据获取
 
 
-//任性猫数据获取
-function rxmck() {
-   if ($request.url.indexOf("miner/cat.php") > -1 && $request.body.indexOf('method=havest') > -1){
-  const rxmurl = $request.url
-  if(rxmurl)     $.setdata(rxmurl,`rxmurl${status}`)
-    $.log(rxmurl)
-    const rxmhd = JSON.stringify($request.headers)
-        if(rxmhd)    $.setdata(rxmhd,`rxmhd${status}`)
-$.log(rxmhd)
-const rxmbody = JSON.stringify($request.body)
-        if(rxmbody)    $.setdata(rxmbody,`rxmbody${status}`)
-$.log(rxmbody)
-   $.msg($.name,"",'任性猫'+`${status}:` +'数据获取成功！')
+function hldspck() {
+   if ($request.url.indexOf("Vgetuserinfo") > -1) {
+ const hldspurl = $request.url
+  if(hldspurl)     $.setdata(hldspurl,`hldspurl${status}`)
+    $.log(hldspurl)
+  const hldsphd = JSON.stringify($request.headers)
+        if(hldsphd)    $.setdata(hldsphd,`hldsphd${status}`)
+$.log(hldsphd)
+   $.msg($.name,"",'哈喽短视频'+`${status}` +'数据获取成功！')
   }
 }
 
 
-
-
-
-
-
-//任性猫
-function rxmqd(timeout = 0) {
+//哈喽短视频红包
+function hldspsp(timeout = 0) {
   return new Promise((resolve) => {
-      //console.log(rxmhd.match(/Cookie":"(.+?)","/)[1])
 let url = {
-        url : rxmurl,
-        headers : JSON.parse($.getdata('rxmhd')),
-        body : 'method=havest',}
-
- $.post(url, async(error, resp, data) =>{
+        url : 'https://vip.75787.com/app/index.php?i=3&t=0&v=1.1.47&from=wxapp&c=entry&a=wxapp&do=dorenwu&m=luobo_video&sign='+hlsign+'&uid='+hluid,
+        headers : JSON.parse(hldsphd),
+        }
+      $.get(url, async (err, resp, data) => {
         try {
-           //console.log('这里还没错误')
+           
     const result = JSON.parse(data)
-  
-       if(result.state == 1){
-        console.log('任性猫回执:成功🌝 '+result.msg)
+        if(result.data !== 0){
+        console.log('\n哈喽短视频[领取视频红包]回执:成功🌝 \n获得视频奖励: '+result.data+'等待20秒继续领取')
+           await $.wait(20000);
+           await hldspsp();
+       
+        
 } else {
-        console.log('任性猫回执:失败🚫 '+result.msg)}
-//$.msg("","","任性猫已运行完毕")
+     
+console.log('\n哈喽短视频[领取视频红包]回执:失败🚫')
+
+}
+   
         } catch (e) {
           //$.logErr(e, resp);
         } finally {
           resolve()
         }
-      
+    },timeout)
+  })
+}
+
+
+//哈喽短视频签到
+function hldspqd(timeout = 0) {
+  return new Promise((resolve) => {
+    setTimeout( ()=>{
+      if (typeof $.getdata('hldsphd') === "undefined") {
+        $.msg($.name,"",'请先获取哈喽短视频数据!😓',)
+        $.done()
+      }
+hlsign = hldspurl.match(/sign=(\w+)/)[1]
+hluid = hldspurl.match(/uid=(\w.+)/)[1]
+
+let url = {
+        url : 'https://vip.75787.com/app/index.php?i=3&t=0&v=1.1.47&from=wxapp&c=entry&a=wxapp&do=Doqiandao&m=luobo_video&sign='+hlsign+'&uid='+hluid,
+        headers : JSON.parse(hldsphd),
+        
+}
+      $.get(url, async (err, resp, data) => {
+        try {
+    const result = JSON.parse(data)
+        if(result.errno == 0){
+     
+
+        console.log('\n哈喽短视频[签到]回执:成功🌝  \n获得金币:'+result.data.price)
+     //$.done()
+       await $.wait(2000);
+        await hldsprw();
+        
+} else {
+console.log('哈喽短视频[签到]回执:失败🚫 '+result.message)
+     await hldspsp();
+}
+        } catch (e) {
+          //$.logErr(e, resp);
+        } finally {
+          resolve()
+        }
+      })
     },timeout)
   })
 }

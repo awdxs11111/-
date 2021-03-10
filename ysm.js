@@ -1,11 +1,11 @@
 /*
 软件名称:云扫码 微信扫描二维码打开
-更新时间：2021-03-02 @肥皂
+更新时间：2021-03-09 @肥皂
 脚本说明：云扫码自动阅读
 脚本为自动完成云扫码的阅读任务
 每日收益1元左右，可多号撸。提现秒到
 类似番茄看看，番茄看看黑了就跑云扫码，云扫码黑了就跑番茄看看
-哈哈哈啊哈哈哈哈，其实是可以一起跑的，没关系
+哈哈哈啊哈哈哈哈
 
 任务打开二维码地址 https://raw.githubusercontent.com/age174/-/main/3B7C4F94-B961-4690-8DF7-B27998789124.png
 微信扫描打开，保存临时码，再去扫码获取数据
@@ -14,11 +14,10 @@
 
 本脚本以学习为主！
 首次运行脚本，会提示获取数据
-
 去云扫码，点击开始阅读，获得阅读数据
 七八秒后返回，获得提交任务数据
 跑脚本到3000金币，手动提现一次，获得自动提现数据
-总共需要三个数据。。。。
+总共需要三个数据。。
 
 TG电报群: https://t.me/hahaha802
 
@@ -26,6 +25,8 @@ TG电报群: https://t.me/hahaha802
 加入自动兑换和自动提现，当前金币大于等于3000会自动提现，请自行去获取提现数据，方法，进入云扫码，成功提现一次获取数据成功
 解决多账号问题，可以多账号撸了
 3.2更新,新增判断，如果提示当前任务已结束脚本会尝试继续执行不会终止循环，key提交提示失败也会尝试重新执行，增加了提现成功的通知
+3.8更新，修复因官方更新无法提交key和领取任务奖励的问题
+3.9更新 修复云扫码官方更新无法自动阅读的问题
 
 boxjs地址 :  
 
@@ -221,14 +222,6 @@ function ysm1(timeout = 0) {
         $.msg($.name,"",'请先获取云扫码数据!😓',)
         $.done()
       }
-//console.log(ysmurl.match(/m.(.*?)reada/)[1])
-//console.log("http:"+ysmurl.match(/http:(.*?)yunonline/)[1]+"yunonline/v1/add_gold")
-//$.done()
-//erd14.jkfjcop.top/
-//console.log("http:"+ysmurl.match(/http:(.*?)yunonline/)[1]+"yunonline/v1/task")
-//console.log(ysmhd)
-//console.log(ysmbody)
-
 
 let url = {
         url : "http:"+ysmurl.match(/http:(.*?)yunonline/)[1]+"yunonline/v1/task",
@@ -249,8 +242,10 @@ let url = {
        console.log('\n🧼来自肥皂的提示:没有匹配到key'+result.data.msg)
 } else {
         ysmkey = result.data.link
-        await ysm2();
+        //$.log(ysmkey)
         await $.wait(1000);
+        await ysm2();
+        
 }
         
 } else {
